@@ -49,15 +49,23 @@ def unroll(args, func, method, results):
                 threads.append([])
                 threads[-1] = threading.Thread(target=func, args=(i, j, matrix_a[i][j], matrix_b[i][j], results))
                 threads[-1].start()
-                
+        end_time = datetime.datetime.today()
+        time_in_program = end_time - start_time
+        with open('result_thread_sum.txt', 'a') as file:
+            file.write(str(time_in_program.total_seconds())+"\n")
+
         print_matrix(results)
     
     else: 
         for arg, rand in zip(matrix_a, matrix_b):
             func(arg, rand, results)
-                      
+
         if len(results) == len(matrix_a):
             print_matrix(results)
+        end_time = datetime.datetime.today()
+        time_in_program = end_time - start_time
+        with open('result_proc_sum.txt', 'a') as file:
+            file.write(str(time_in_program.total_seconds())+"\n")
 
 if __name__ == '__main__':
     res = []
@@ -66,4 +74,4 @@ if __name__ == '__main__':
     r2 = random_matrix(10,10)
     args2 = [r1,r2]
     unroll(args, sum_proc, 'proc', res)
-    # unroll(args2, sum_thre, 'thre', res)
+    unroll(args2, sum_thre, 'thre', res)

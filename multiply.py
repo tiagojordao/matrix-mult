@@ -48,27 +48,25 @@ def unroll(args, func, method, results):
                 threads[-1] = threading.Thread(target=func, args=(idx, j, arg, aux, results))
                 threads[-1].start() 
 
-        file = open("result_thread_multiply.txt","w") 
         end_time = datetime.datetime.today()
         time_in_program = end_time - start_time
-        file.write(str(time_in_program.total_seconds())+"\n")
-        file.close()
+        with open('result_thread_multiply.txt', 'a') as file:
+            file.write(str(time_in_program.total_seconds())+"\n")
         print_matrix(results)
     
     else:
         for arg1, arg2 in zip(matrix_a, matrix_b):
             func(arg1, arg2, results)
 
-        file = open("result_proc_multiply.txt","w") 
         end_time = datetime.datetime.today()
         time_in_program = end_time - start_time
-        file.write(str(time_in_program.total_seconds())+"\n")
-        file.close()
         if len(results) == len(matrix_a):
             print_matrix(results)
+        with open('result_proc_multiply.txt', 'a') as file:
+            file.write(str(time_in_program.total_seconds())+"\n")
 
 if __name__ == '__main__':
     res = []
     args = [[[0,1,2],[3,4,5],[6,7,8]],[[0,1,2],[3,4,5],[6,7,8]]]
     unroll(args, process_multiply, 'proc', res)
-    # unroll(args, thre_multiply, 'thre', res)
+    unroll(args, thre_multiply, 'thre', res)
