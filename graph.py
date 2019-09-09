@@ -4,7 +4,7 @@ import numpy as np
 fig, ax = plt.subplots() 
 labels = (1,2,3,4,5,6,8,10,20,30,40,50,75,100)
 vals = []
-with open("sequencial_sum_result.txt", "r+") as f:
+with open("sequencial_multiply_result.txt", "r+") as f:
     for line in f.readlines():
         print(line)
         vals.append(line)
@@ -20,5 +20,5 @@ plt.bar(y_pos, vals)
 plt.xticks(y_pos, labels)
  
 # Show graphic
-plt.savefig('result.png')
+plt.savefig('result_mult_seq.png')
 plt.close(fig)

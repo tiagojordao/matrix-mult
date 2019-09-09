@@ -3,6 +3,15 @@ import random
 import threading
 import datetime
 
+def random_matrix(rows, cols):
+    matrix = []
+    for i in range(rows):
+        matrix.append([])
+        for j in range(cols):
+            matrix[i].append([])
+            matrix[i][j] = random.randint(0,10)
+    return matrix
+
 def process_multiply(row_a, row_b, results):
     pid = os.fork()
     if pid == 0:
@@ -10,8 +19,9 @@ def process_multiply(row_a, row_b, results):
         for a, b in zip(row_a, row_b):
             aux.append(a + b)
         results.append(aux)
+        os._exit(0)
     else:
-        os.wait()
+        os.waitpid(0,0)
 
 def thre_multiply(i, j, a, b, results):
     threading.currentThread()
@@ -62,11 +72,23 @@ def unroll(args, func, method, results):
         time_in_program = end_time - start_time
         if len(results) == len(matrix_a):
             print_matrix(results)
-        with open('result_proc_multiply.txt', 'a') as file:
-            file.write(str(time_in_program.total_seconds())+"\n")
+            with open('result_proc_multiply.txt', 'a') as file:
+                file.write(str(time_in_program.total_seconds())+"\n")
+       
 
 if __name__ == '__main__':
     res = []
     args = [[[0,1,2],[3,4,5],[6,7,8]],[[0,1,2],[3,4,5],[6,7,8]]]
+    vals = [1,2,3,4,5,6,8,10,20,30,40,50,75,100]
+    for i in vals:
+        r1 = random_matrix(i,i)
+        r2 = random_matrix(i,i)
+        args2 = [r1,r2]
+        unroll(args2,process_multiply, 'proc', res)
+    for i in vals:
+        r1 = random_matrix(i,i)
+        r2 = random_matrix(i,i)
+        args2 = [r1,r2]
+        unroll(args2,thre_multiply, 'thre', res)
     unroll(args, process_multiply, 'proc', res)
     unroll(args, thre_multiply, 'thre', res)
