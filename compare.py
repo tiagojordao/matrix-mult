@@ -14,7 +14,6 @@ def random_matrix(rows, cols):
 
 #funçao que recebe as duas matrizes e realiza a soma
 def sum_matrix(matrix_a, matrix_b):
-    file = open("sequencial_sum_result.txt","w") 
     start_time = datetime.datetime.today()
     matrix = []
     for a, b in zip(matrix_a, matrix_b):
@@ -24,8 +23,8 @@ def sum_matrix(matrix_a, matrix_b):
         matrix.append(aux)
     end_time = datetime.datetime.today()
     time_in_program = end_time - start_time
-    file.write(str(time_in_program.total_seconds())+"\n")
-    file.close() 
+    with open('sequencial_sum_result.txt', 'a') as file:
+        file.write(str(time_in_program.total_seconds())+"\n")
     return matrix
 
 #funçao que recebe as duas matrizes e realiza a multiplicacao

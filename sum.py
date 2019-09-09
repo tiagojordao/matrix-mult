@@ -18,7 +18,9 @@ def sum_proc(row_a, row_b, results):
         aux = [] # list que guarda a soma dos elementos
         for a,b in zip(row_a, row_b):
             aux.append(a + b)
-        results.append(aux)  
+        results.append(aux)
+    else:
+        os.wait()
 
 def sum_thre(i, j, a, b, results):
     threading.currentThread() # executa a soma na thread atual
@@ -52,14 +54,10 @@ def unroll(args, func, method, results):
     
     else: 
         for arg, rand in zip(matrix_a, matrix_b):
-            func(arg, rand, results)            
-        print_matrix(results)
-
-    end_time = datetime.datetime.today()
-    time_in_program = end_time - start_time
-    file.write(str(time_in_program.total_seconds())+"\n")
-    file.close() 
-    print("total time func unroll of sum: ",time_in_program.total_seconds())
+            func(arg, rand, results)
+                      
+        if len(results) == len(matrix_a):
+            print_matrix(results)
 
 if __name__ == '__main__':
     res = []
@@ -67,5 +65,5 @@ if __name__ == '__main__':
     r1 = random_matrix(10,10)
     r2 = random_matrix(10,10)
     args2 = [r1,r2]
-    # unroll(args, sum_proc, 'proc', res)
-    unroll(args2, sum_thre, 'thre', res)
+    unroll(args, sum_proc, 'proc', res)
+    # unroll(args2, sum_thre, 'thre', res)
