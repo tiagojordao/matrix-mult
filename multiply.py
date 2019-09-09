@@ -1,32 +1,35 @@
 import os
 import random
 import threading
-
-def random_matrix(rows, cols):
-    matrix = []
-    for i in range(rows):
-        matrix.append([])
-        for j in range(cols):
-            matrix[i].append([])
-            matrix[i][j] = random.randint(0,10)
-    return matrix
+import datetime
 
 def process_multiply(row_a, row_b, results):
+    start_time = datetime.datetime.today()
     pid = os.fork()
     if pid == 0:
         aux = []
         for a, b in zip(row_a, row_b):
             aux.append(a + b)
-
-        results.append(aux)  
+        results.append(aux)
+    file = open("result_proc_multiply.txt","w") 
+    end_time = datetime.datetime.today()
+    time_in_program = end_time - start_time
+    file.write(str(time_in_program.total_seconds())+"\n")
+    file.close() 
 
 def thre_multiply(i, j, a, b, results):
+    start_time = datetime.datetime.today()
+
     threading.currentThread()
     aux = 0
     for idx in range(len(a)):
         aux += a[idx] * b[idx]
-    
     results[i][j] = aux
+    file = open("result_thread_multiply.txt","w") 
+    end_time = datetime.datetime.today()
+    time_in_program = end_time - start_time
+    file.write(str(time_in_program.total_seconds())+"\n")
+    file.close() 
 
 def print_matrix(matrix):
     for i in range(len(matrix)):
@@ -35,20 +38,22 @@ def print_matrix(matrix):
         print()
 
 def unroll(args, func, method, results):
-    random_m = random_matrix(len(args), len(args[0]))
+   
+    matrix_a = args[0]
+    matrix_b = args[1]
 
     if method == "thre":
         threads = []
-        cols = len(random_m[0])
-        rows = len(random_m)
+        cols = len(matrix_b[0])
+        rows = len(matrix_b)
 
-        results = [[0 for i in range(cols)] for j in range(len(args))]
+        results = [[0 for i in range(cols)] for j in range(len(matrix_b))]
 
         for j in range(cols):
             aux = []
             for i in range(rows):
-                aux.append(random_m[i][j])
-            for idx, arg in enumerate(args):
+                aux.append(matrix_b[i][j])
+            for idx, arg in enumerate(matrix_a):
                 threads.append([])
                 threads[-1] = threading.Thread(target=func, args=(idx, j, arg, aux, results))
                 threads[-1].start() 
@@ -57,14 +62,14 @@ def unroll(args, func, method, results):
     
     else: 
         processos = []
-
-        for arg, row_aleatoria in zip(args, random_m):
+        for arg1, arg2 in zip(matrix_a, matrix_b):
             processos.append([])
-            func(arg, row_aleatoria, results)            
-
+            func(arg1, arg2, results) 
+            print(matrix_a)
         print_matrix(results)
 
 if __name__ == '__main__':
     res = []
-    unroll([[0,1,2],[3,4,5],[6,7,8]], process_multiply, 'proc', res)
-    #unroll([[0,1,2],[3,4,5],[6,7,8]], thre_multiply, 'thre', res)
+    args = [[[0,1,2],[3,4,5],[6,7,8]],[[0,1,2],[3,4,5],[6,7,8]]]
+    unroll(args, process_multiply, 'proc', res)
+    # unroll(args, thre_multiply, 'thre', res)

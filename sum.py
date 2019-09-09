@@ -1,6 +1,7 @@
 import os
 import random
 import threading
+import datetime
 
 def random_matrix(rows, cols):
     matrix = []
@@ -8,7 +9,7 @@ def random_matrix(rows, cols):
         matrix.append([])
         for j in range(cols):
             matrix[i].append([])
-            matrix[i][j] = random.randint(0, 9)
+            matrix[i][j] = random.randint(0,10)
     return matrix
 
 def sum_proc(row_a, row_b, results):
@@ -17,7 +18,6 @@ def sum_proc(row_a, row_b, results):
         aux = [] # list que guarda a soma dos elementos
         for a,b in zip(row_a, row_b):
             aux.append(a + b)
-
         results.append(aux)  
 
 def sum_thre(i, j, a, b, results):
@@ -31,29 +31,41 @@ def print_matrix(matrix):
         print()
 
 def unroll(args, func, method, results):
-    random_m = random_matrix(len(args), len(args[0]))
+    start_time = datetime.datetime.today()
+    file = open("result_sum.txt","w")
+    matrix_a = args[0]
+    matrix_b = args[1]
 
     if method == "thre":
         threads = []
-        cols = len(args[0])
-        rows = len(args)
+        cols = len(matrix_a[0])
+        rows = len(matrix_a)
 
         results = [[0 for i in range(cols)] for j in range(rows)]
         for i in range(rows):
             for j in range(cols):
                 threads.append([])
-                threads[-1] = threading.Thread(target=func, args=(i, j, args[i][j], random_m[i][j], results))
+                threads[-1] = threading.Thread(target=func, args=(i, j, matrix_a[i][j], matrix_b[i][j], results))
                 threads[-1].start()
                 
         print_matrix(results)
     
     else: 
-        for arg, rand in zip(args, random_m):
+        for arg, rand in zip(matrix_a, matrix_b):
             func(arg, rand, results)            
-
         print_matrix(results)
+
+    end_time = datetime.datetime.today()
+    time_in_program = end_time - start_time
+    file.write(str(time_in_program.total_seconds())+"\n")
+    file.close() 
+    print("total time func unroll of sum: ",time_in_program.total_seconds())
 
 if __name__ == '__main__':
     res = []
-    unroll([[0,1,2],[3,4,5],[6,7,8]], sum_proc, 'proc', res)
-    #unroll([[0,1,2],[3,4,5],[6,7,8]], sum_thre, 'thre', res)
+    args = [[[0,1,2],[3,4,5],[6,7,8]],[[0,1,2],[3,4,5],[6,7,8]]]
+    r1 = random_matrix(10,10)
+    r2 = random_matrix(10,10)
+    args2 = [r1,r2]
+    # unroll(args, sum_proc, 'proc', res)
+    unroll(args2, sum_thre, 'thre', res)
