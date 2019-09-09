@@ -20,6 +20,5 @@ plt.bar(y_pos, vals)
 plt.xticks(y_pos, labels)
  
 # Show graphic
-plt.show()
-plt.savefig('books_read.png')
+plt.savefig('result.png')
 plt.close(fig)
